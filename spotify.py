@@ -19,7 +19,6 @@ def login():
                 ## save token
                 ## redirect to artists search bar
                 TOKEN = res.json()
-                print(TOKEN)
                 return TOKEN
         else:
                 return res.status_code
@@ -50,7 +49,8 @@ def search():
 def topTracks(artistID):
     url = "https://api.spotify.com/v1/artists/"+ artistID + "/top-tracks"
     payload = {
-            "market": "es"
+        "market": "es",
+        "limit" : 3
     }
     headers = {
             "Content-Type": "application/json", 
@@ -63,9 +63,28 @@ def topTracks(artistID):
     else:
         return res.status_code
 
-login()
-#print(search())
-print(topTracks("6kACVPfCOnqzgfEF5ryl0x"))
 
 def main():
-    return 0
+    #Displaying Artists
+    login()
+    artistList = search()
+    artistID = ""
+    i = 1
+    for artist in artistList["artists"]["items"]:
+        print(str(i) + ". ", artist["name"])
+        i += 1
+    
+    #Choosing artists
+    chosenArtist = input("Choose one of the artists: ")
+    for artist in artistList["artists"]["items"]:
+        if artist["name"] == chosenArtist:
+            artistID = artist['id']
+
+    print("Top Tracks: ")
+    #Displaying top songs
+    topSongs = topTracks(artistID)
+
+    for track in topSongs["tracks"]:
+        print(track["name"], track["preview_url"])
+
+main()
