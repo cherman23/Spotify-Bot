@@ -19,12 +19,12 @@ def login():
                 ## save token
                 ## redirect to artists search bar
                 TOKEN = res.json()
+                print(TOKEN)
                 return TOKEN
         else:
                 return res.status_code
 
 def search():
-    login()
     artist = input("Enter arist name: ")
     url ="https://api.spotify.com/v1/search"
     payload= {
@@ -38,7 +38,8 @@ def search():
     }
     res = requests.get(url, headers= headers, params=payload)
     if(res.status_code == 200):
-            return res.json()
+            topArtist = res.json()
+            return topArtist
     else:
             return res.status_code
     ## some button here to get artist name
@@ -46,5 +47,25 @@ def search():
     ## present the top 3 to user
     ## user selects artist
 
-search()
+def topTracks(artistID):
+    url = "https://api.spotify.com/v1/artists/"+ artistID + "/top-tracks"
+    payload = {
+            "market": "es"
+    }
+    headers = {
+            "Content-Type": "application/json", 
+            "Authorization": "Bearer " + TOKEN["access_token"]
+    }
+    res = requests.get(url, headers=headers, params=payload)
 
+    if (res.status_code == 200):
+        return res.json()
+    else:
+        return res.status_code
+
+login()
+#print(search())
+print(topTracks("6kACVPfCOnqzgfEF5ryl0x"))
+
+def main():
+    return 0
